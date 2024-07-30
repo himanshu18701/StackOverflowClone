@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Stack Overflow Clone</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/homepage.css">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" th:href="@{/questions/home}">Stack Overflow</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/users}">Users</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/questions/list}">Questions</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/tags}">Tags</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/users/profile}">Profile</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item" sec:authorize="hasAnyRole('ANONYMOUS')">
+                <form th:action="@{/users/login}" method="GET" class="form-inline">
+                    <button class="btn btn-outline-my-color" type="submit">Login</button>
+                </form>
+            </li>
+            <li class="nav-item" sec:authorize="hasAnyRole('USER')">
+                <form th:action="@{/logout}" method="POST" class="form-inline">
+                    <button class="btn btn-outline-my-color" type="submit">Logout</button>
+                </form>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="search-box">
+        <form th:action="@{/questions/list}" method="GET" class="form-inline">
+            <input type="hidden" name="sortKeyword" th:value="${sortKeyword}"/>
+            <input class="form-control form-control-lg w-100" type="text" name="searchKeyword" placeholder="Search...">
+        </form>
+    </div>
+    <div class="sort">
+        <form id="sort" th:action="@{/questions/list}" method="GET">
+            <input type="hidden" name="searchKeyword" th:value="${searchKeyword}"/>
+            <button type="submit" form="sort" name="sortKeyword" value="popularity">Popularity</button>
+            <button type="submit" form="sort" name="sortKeyword" value="month">Month</button>
+            <button type="submit" form="sort" name="sortKeyword" value="week">Week</button>
+        </form>
+    </div>
+    <form th:action="@{/questions/create}" method="GET">
+        <button class="btn btn-primary mb-3" type="submit" style="margin-top: 20px;margin-bottom: 50px">Ask Question
+        </button>
+    </form>
+    <div th:if="${questions.size()==0}" class="alert alert-info">
+        <h2>No questions uploaded today.</h2>
+        <a th:href="@{/questions/list}">Check previous questions</a>
+    </div>
+    <div class="question-list">
+        <div th:each="question : ${questions}" class="question-item">
+            <div class="row">
+                <div class="col-md-10">
+                    <a th:href="@{/questions/{id}(id=${question.id})}" th:text="${question.title}" class="h5"></a>
+                    <div><span th:text="${question.timeAgo}"></span></div>
+                    <div>
+                        <span th:each="tag : ${question.getTags()}" class="tag" th:text="${tag.name}"></span>
+                    </div>
+                </div>
+                <div class="col-md-2 stats text-md-right text-left">
+                    <div><strong>Votes:</strong> <span th:text="${question.votes}"></span></div>
+                    <div><strong>Answers:</strong> <span th:text="${question.answers.size()}"></span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${home==false}" class="pages">
+        <div class="prev">
+            <form th:action="@{/questions/list}" th:if="${pageNo > 0}" method="GET">
+                <input type="hidden" name="searchKeyword" th:value="${searchKeyword}"/>
+                <input type="hidden" name="sortKeyword" th:value="${sortKeyword}"/>
+                <input type="hidden" name="pageNo" th:value="${pageNo}"/>
+                <input type="submit" value="Previous"/>
+            </form>
+        </div>
+
+        <div class="next">
+            <form th:action="@{/questions/list}" th:if="${pageNo < totalPages - 1}" method="GET">
+                <input type="hidden" name="page" value="next"/>
+                <input type="hidden" name="searchKeyword" th:value="${searchKeyword}"/>
+                <input type="hidden" name="sortKeyword" th:value="${sortKeyword}"/>
+                <input type="hidden" name="pageNo" th:value="${pageNo}"/>
+                <input type="submit" value="Next"/>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

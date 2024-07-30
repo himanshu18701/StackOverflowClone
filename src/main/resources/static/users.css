@@ -1,0 +1,53 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+}
+
+.navbar {
+    border-bottom: 2px solid #f48024;
+}
+
+.navbar-brand {
+    color: #f48024;
+}
+
+.btn-outline-my-color {
+    color: #f48024;
+    border-color: #f48024;
+}
+
+.btn-outline-my-color:hover {
+    background: #f48024;
+    color: white;
+}
+
+.container {
+    margin-top: 20px;
+}
+
+.card {
+    border: 1px solid #e1e4e8;
+    border-radius: 4px;
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-body p {
+    margin: 5px 0;
+}
+
+.card-body a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.form-inline {
+    margin-bottom: 20px;
+}
+
+.btn-size {
+    max-height: 38px;
+}

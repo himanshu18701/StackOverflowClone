@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Stack Overflow - Ask a Question</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/ask-question.css">
+    <script src="https://cdn.tiny.cloud/1/c0233rbe7tf18bg83jypvgogq1q44e60od3h5jppsv57lptz/tinymce/7/tinymce.min.js"
+            referrerpolicy="origin"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/highlight.min.js"></script>
+    <script>
+        tinymce.init({
+            selector: 'textarea.tinymce',
+            plugins: 'codesample image code',
+            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | codesample code | link image',
+            codesample_languages: [
+                {text: 'HTML/XML', value: 'markup'},
+                {text: 'JavaScript', value: 'javascript'},
+                {text: 'CSS', value: 'css'},
+                {text: 'PHP', value: 'php'},
+                {text: 'Ruby', value: 'ruby'},
+                {text: 'Python', value: 'python'},
+                {text: 'Java', value: 'java'},
+                {text: 'C', value: 'c'},
+                {text: 'C#', value: 'csharp'},
+                {text: 'C++', value: 'cpp'}
+            ],
+            height: 400,
+            setup: function (editor) {
+                editor.on('init', function () {
+                    this.getDoc().body.style.fontSize = '14px';
+                });
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre code').forEach((block) => {
+                hljs.highlightElement(block);
+            });
+        });
+    </script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" th:href="@{/questions/home}">Stack Overflow</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/users}">Users</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/questions/list}">Questions</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/tags}">Tags</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/users/profile}">Profile</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav nav-right">
+            <li class="nav-item" sec:authorize="hasAnyRole('ANONYMOUS')">
+                <form th:action="@{/users/login}" method="GET" class="form-inline">
+                    <button class="btn btn-outline-my-color" type="submit">Login</button>
+                </form>
+            </li>
+            <li class="nav-item" sec:authorize="hasAnyRole('USER')">
+                <form th:action="@{/logout}" method="POST" class="form-inline">
+                    <button class="btn btn-outline-my-color" type="submit">Logout</button>
+                </form>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="container form-container">
+    <form th:action="@{/questions/update}" th:object="${question}" th:if="${update}" method="post">
+        <input type="hidden" name="id" th:value="*{id}"/>
+        <div class="form-group">
+            <label for="title">Title</label>
+            <p>Be specific and imagine you're asking a question to another person</p>
+            <input type="text" class="form-control" th:field="*{title}">
+        </div>
+        <div class="form-group">
+            <label>What are the details of your problem?</label>
+            <p>Introduce the problem and expand on what you put in the title. Minimum 20 characters.</p>
+            <textarea th:field="*{content}" placeholder="Write your answer here"
+                      class="tinymce form-control"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="tagString">Tags</label>
+            <p>Add tags separated by commas</p>
+            <input type="text" class="form-control" th:field="*{tagString}">
+        </div>
+        <button type="submit" class="btn btn-custom">Update</button>
+    </form>
+
+    <form th:action="@{/questions/create}" th:object="${question}" th:unless="${update}" method="post">
+        <div class="form-group">
+            <label for="title">Title</label>
+            <p>Be specific and imagine you're asking a question to another person</p>
+            <input type="text" class="form-control" id="title" th:field="*{title}"
+                   placeholder="e.g. How to copy files between Windows and Linux host using Ansible?" required>
+        </div>
+        <div class="form-group">
+            <label>What are the details of your problem?</label>
+            <p>Introduce the problem and expand on what you put in the title. Minimum 20 characters.</p>
+            <textarea th:field="*{content}" placeholder="Write your question description here"
+                      class="tinymce form-control"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="tagString">Tags</label>
+            <p>Add tags separated by commas</p>
+            <input type="text" class="form-control" id="tagString" th:field="*{tagString}"
+                   placeholder="enter tags (comma separated) At least one required" required>
+        </div>
+        <button type="submit" class="btn btn-custom">Create</button>
+    </form>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

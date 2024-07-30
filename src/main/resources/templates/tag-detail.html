@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Questions for Tag</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/tag-detail.css">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" th:href="@{/questions/home}">Stack Overflow</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/users}">Users</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/questions/list}">Questions</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/tags}">Tags</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/users/profile}">Profile</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item" sec:authorize="hasAnyRole('ANONYMOUS')">
+                <form th:action="@{/users/login}" method="GET" class="form-inline">
+                    <button class="btn btn-outline-my-color" type="submit">Login</button>
+                </form>
+            </li>
+            <li class="nav-item" sec:authorize="hasAnyRole('USER')">
+                <form th:action="@{/logout}" method="POST" class="form-inline">
+                    <button class="btn btn-outline-my-color" type="submit">Logout</button>
+                </form>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container">
+    <h2>Questions for Tag</h2>
+    <div th:each="question : ${questions}" class="question-item">
+        <a th:href="@{/questions/{id}(id=${question.getId()})}">
+            <p th:text="${question.title}"></p>
+        </a>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

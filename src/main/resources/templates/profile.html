@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>User Page</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/profile.css">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" th:href="@{/questions/home}">Stack Overflow</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/users}">Users</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/questions/list}">Questions</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/tags}">Tags</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/users/profile}">Profile</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav ml-auto btn-size">
+            <li class="nav-item" sec:authorize="hasAnyRole('ANONYMOUS')">
+                <form th:action="@{/users/login}" method="GET" class="form-inline">
+                    <button class="btn btn-outline-my-color" type="submit">Login</button>
+                </form>
+            </li>
+            <li class="nav-item" sec:authorize="hasAnyRole('USER')">
+                <form th:action="@{/logout}" method="POST" class="form-inline">
+                    <button class="btn btn-outline-my-color" type="submit">Logout</button>
+                </form>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="sticky-top">
+                <h2 id="profile-name" th:text="${user.name}"></h2>
+                <div class="user-stats stats-section">
+                    <h3>Stats</h3><br>
+                    <p>Reputation: <span th:text="${user.reputation}"></span></p><br>
+                    <p>Answers: <span th:text="${user.answers.size()}"></span></p>
+                    <p>Questions: <span th:text="${user.questions.size()}"></span></p>
+                </div>
+                <div class="skill-section">
+                    <h4>Skills:</h4><br>
+                    <p th:text="${user.skills}"></p>
+                </div>
+                <div class="about-section">
+                    <h4>About:</h4>
+                    <p th:text="${user.about}"></p>
+                </div>
+                <div th:if="${user.reputation} >= 10" class="badge-section">
+                    <div class="badge-container">
+                        <div class="badge" th:if="${user.reputation}>=10"><img src="/bronze.png" alt="Bronze Badge"><br>Bronze Badge</div>
+                        <div class="badge" th:if="${user.reputation}>=20"><img src="/silver.png" alt="Silver Badge"><br>Silver Badge</div>
+                        <div class="badge" th:if="${user.reputation}>=30"><img src="/gold.png" alt="Gold Badge"><br>Gold Badge</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="question-answer-container col-md-9">
+            <h3>Questions</h3>
+            <div th:each="question:${questions}" class="question-item mb-3">
+                <a th:href="@{/questions/{id}(id=${question.id})}" th:text="${question.title}" class="question-title d-block"></a>
+                <small th:text="${question.getCreatedAt().toLocalDate()}" class="question-date"></small>
+            </div>
+            <h3>Answers</h3>
+            <ul class="list-unstyled">
+                <li th:each="answer : ${answers}" class="answer-item mb-3">
+                    <a th:href="@{|/questions/${answer.question.id}#answer-${answer.id}|}" th:text="${answer.question.title}" class="answer-title d-block"></a>
+                    <small th:text="${answer.getCreatedAt().toLocalDate()}" class="question-date"></small>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

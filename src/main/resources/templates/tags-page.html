@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Tags Page</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/tags-page.css">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light nav-size">
+    <a class="navbar-brand" th:href="@{/questions/home}">Stack Overflow</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/users}">Users</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/questions/list}">Questions</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/tags}">Tags</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/users/profile}">Profile</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav ml-auto btn-size">
+            <li class="nav-item" sec:authorize="hasAnyRole('ANONYMOUS')">
+                <form th:action="@{/users/login}" method="GET" class="form-inline">
+                    <button class="btn btn-outline-my-color" type="submit">Login</button>
+                </form>
+            </li>
+            <li class="nav-item" sec:authorize="hasAnyRole('USER')">
+                <form th:action="@{/logout}" method="POST" class="form-inline">
+                    <button class="btn btn-outline-my-color" type="submit">Logout</button>
+                </form>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container">
+    <h2>Tags</h2>
+    <form th:action="@{/tags/filter}" method="get" class="form-inline mb-3" style="display: flex">
+        <input type="text" name="tagName" class="form-control mr-sm-2" placeholder="Filter by tag name"/>
+        <input type="submit" value="Filter" class="btn btn-outline-success" style="margin-left: 10px">
+    </form>
+    <div class="row">
+        <div th:each="tag : ${tags}" class="col-md-4 mb-3">
+            <div class="card" style="text-align:center">
+                <a th:href="@{/tags/{id}(id=${tag.getId()})}" class="card-body">
+                    <p th:text="${tag.name}" style="text-transform: capitalize;font-size:20px"></p>
+                    <p th:text="${tag.questions.size()}"></p>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

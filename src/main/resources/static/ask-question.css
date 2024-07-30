@@ -1,0 +1,37 @@
+.navbar {
+    border-bottom: 2px solid #f48024;
+    padding-left: 16px;
+}
+
+.navbar-brand {
+    color: #f48024;
+}
+
+.btn-outline-my-color {
+    color: #f48024;
+    border-color: #f48024;
+}
+
+.btn-outline-my-color:hover {
+    background: #f48024;
+    color: white;
+}
+
+.form-container {
+    margin: 2rem auto;
+    max-width: 800px;
+}
+
+.form-group label {
+    font-weight: bold;
+}
+
+.form-group p {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.btn-custom {
+    background-color: #f48024;
+    color: white;
+}
